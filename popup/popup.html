@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Respostas Rápidas</title>
+  
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <h2>Respostas AutoFill 🚀</h2>
+
+  <div id="replies-list"></div>
+
+    <!-- Formulário inicialmente escondido -->
+<div class="form" id="reply-form" style="display: none; flex-direction: column; gap: 6px; margin-top: 10px;">
+
+  <!-- 🔹 Agrupando categoria e seletor de cor -->
+  <div class="category-row">
+    <input id="new-reply-category" type="text" placeholder="Categoria (opcional)" />
+    <input 
+      id="new-reply-color" 
+      type="color" 
+      value="#0078d7" 
+      title="Escolha a cor da categoria"
+    />
+  </div>
+
+  <textarea id="new-reply" placeholder="Inserir nova resposta rápida..." rows="3"></textarea>
+</div>
+
+
+    <!-- Botão principal -->
+    <button id="add-reply">Adicionar</button>
+
+    <!-- color picker global (oculto) -->
+    <input id="category-color-picker" type="color" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+
+
+  <script src="sortable.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

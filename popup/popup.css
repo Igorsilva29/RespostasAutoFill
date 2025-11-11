@@ -1,0 +1,269 @@
+/* =========================
+   Variáveis para customização
+   ========================= */
+:root {
+  --popup-bg: #fafafa;
+  --item-bg: #ffffff;
+  --button-bg: #007bff;        /* fundo azul */
+  --button-color: #ffffff;     /* texto branco */
+  --button-hover-bg: #0056b3;  /* azul mais escuro no hover */
+  --font-family: Arial, sans-serif;
+  --popup-width: 600px;           /* tamanho do popup */
+  --popup-max-width: 600px;
+  --popup-min-width: 300px;
+  --popup-padding: 10px;
+  --item-padding: 6px 8px;  
+  --item-border-radius: 4px;
+  --item-border: 1px solid #ddd;
+  --gap-between-items: 5px;
+  --list-max-height: 300px;
+  --button-min-height: 28px;    /* altura mínima dos botões */
+}
+
+/* =========================
+   Corpo do popup
+   ========================= */
+body {
+  width: var(--popup-width);
+  max-width: var(--popup-max-width);
+  min-width: var(--popup-min-width);
+  padding: var(--popup-padding);
+  font-family: var(--font-family);
+  background: var(--popup-bg);
+  box-sizing: border-box;
+}
+
+/* =========================
+   Título
+   ========================= */
+h2 {
+  text-align: center;
+  font-size: 18px;
+  color: #eee;
+  margin: 0 auto;
+  padding: 4px 16px;
+  background: #007bff;
+  width: fit-content; 
+  border-radius: 5px;
+}
+
+.category-header {
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+  position: relative;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background-color: #f4f4f4;
+  margin-right: 6px;
+}
+
+.category-header::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  background-color: var(--tag-color, #0078d7);
+  clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+  margin-right: 6px;
+  border-radius: 2px;
+}
+
+.category-header:hover { background: #f3f7fb; }
+.reply-item button { background: transparent; border: none; cursor: pointer; }
+
+
+/* =========================
+   Formulário de nova resposta
+   ========================= */
+/* .form {
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px;
+  margin-top: 10px;
+} */
+
+#new-reply {
+  flex: 1;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+#new-reply-category {
+  height: 30px; /* mantém uma linha */
+  padding: 5px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#add-reply {
+  margin-top: 10px; /* 🟢 Espaço acima do botão */
+  padding: 6px 12px; /* 🟢 Tamanho interno confortável */
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+#category-color-picker {
+  width: 40px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  align-self: flex-start; /* mantém o botão alinhado à esquerda */
+}
+
+button {
+  background: var(--button-bg);
+  color: var(--button-color);
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  min-height: var(--button-min-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+button:hover {
+  background: var(--button-hover-bg);
+  opacity: 0.9;
+}
+
+/* =========================
+   Lista de respostas
+   ========================= */
+#replies-list {
+  max-height: var(--list-max-height);
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+/* =========================
+   Itens de resposta
+   ========================= */
+.reply-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--item-bg);
+  padding: var(--item-padding);
+  margin: var(--gap-between-items) 0;
+  border-radius: var(--item-border-radius);
+  border: var(--item-border);
+  transition: background 0.2s;
+}
+
+.reply-item:hover {
+  background: #f0f8ff;
+}
+
+/* Texto da resposta */
+.reply-text {
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Container de botões */
+.reply-buttons {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   Botões da lista (editar, apagar, salvar, cancelar)
+   ========================= */
+.reply-item button {
+  background: var(--button-bg);  /* azul padrão */
+  color: var(--button-color);
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  min-height: var(--button-min-height);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+/* Hover geral */
+.reply-item button:hover {
+  background: var(--button-hover-bg);
+  opacity: 0.9;
+}
+
+/* Botões Apagar e Cancelar em vermelho */
+.reply-item button.delete-btn,
+.reply-item button.cancel-btn {
+  background: #dc3545;       /* vermelho */
+  color: #ffffff;
+}
+
+.reply-item button.delete-btn:hover,
+.reply-item button.cancel-btn:hover {
+  background: #b02a37;       /* vermelho escuro no hover */
+  opacity: 0.9;
+}
+
+/* =========================
+   Área clicável sobre o ícone da categoria
+   ========================= */
+.category-color-overlay {
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 14px;
+  cursor: pointer;
+  background: transparent;
+  z-index: 3;
+}
+
+/* =========================
+   Campo de cor da nova categoria
+   ========================= */
+#new-reply-category,
+#new-reply-color {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* =========================
+   Linha de categoria e cor
+   ========================= */
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#new-reply-category {
+  flex: 1;
+  height: 20px;
+  padding: 5px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#new-reply-color {
+  width: 60px;
+  height: 30px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  padding: 0;
+}
