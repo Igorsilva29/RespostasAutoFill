@@ -91,13 +91,41 @@ h2 {
   font-size: 14px;
 }
 
-#new-reply-category {
-  height: 30px; /* mantém uma linha */
+/* #new-reply-category {
+  height: 30px; /* mantém uma linha 
   padding: 5px 8px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
+} */
+
+#new-reply-category {
+  appearance: none; /* Remove o estilo padrão do sistema */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 8px 30px 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+#new-reply-category:hover {
+  border-color: #0078d7;
+}
+
+#new-reply-category:focus {
+  outline: none;
+  box-shadow: 0 0 3px #0078d7;
+  border-color: #0078d7;
+}
+
 
 #add-reply {
   margin-top: 10px; /* 🟢 Espaço acima do botão */

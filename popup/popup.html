@@ -17,7 +17,14 @@
 
   <!-- 🔹 Agrupando categoria e seletor de cor -->
   <div class="category-row">
-    <input id="new-reply-category" type="text" placeholder="Categoria (opcional)" />
+    <input 
+  id="new-reply-category" 
+  type="text" 
+  list="category-options" 
+  placeholder="Categoria (opcional)" 
+/>
+<datalist id="category-options"></datalist>
+
     <input 
       id="new-reply-color" 
       type="color" 
@@ -31,7 +38,7 @@
 
 
     <!-- Botão principal -->
-    <button id="add-reply">Adicionar</button>
+    <button id="add-reply" title="Clique para adicionar uma nova resposta">Adicionar</button>
 
     <!-- color picker global (oculto) -->
     <input id="category-color-picker" type="color" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
