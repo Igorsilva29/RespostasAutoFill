@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Quick Replies",
+  "name": "Respostas AutoFill",
   "version": "1.0.0",
   "description": "Insira respostas rápidas em qualquer campo de texto (WhatsApp, Gmail, etc).",
   
@@ -10,18 +10,12 @@
     "activeTab"
   ],
   
-  "host_permissions": [
-    "<all_urls>",
-    "https://gestao.sistemas-credfranco.com.br/*",
-    "https://editor.fckeditor.com/*"
-  ],
-
-  "background": {
+   "background": {
     "service_worker": "background.js"
-  },
+    },
 
   "action": {
-    "default_title": "Quick Replies",
+    "default_title": "Respostas AutoFill",
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
