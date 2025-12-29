@@ -4,15 +4,41 @@ const addReplyButton = document.getElementById("add-reply");
 const newReplyCategoryInput = document.getElementById("new-reply-category");
 const categoryColorPicker = document.getElementById("category-color-picker");
 const replyForm = document.getElementById("reply-form");
+const newReplyColorInput = document.getElementById("new-reply-color"); // picker visível
+
 
 // ======================================================================
 // 🔵 CONTROLE DO COLOR PICKER — (NOVO)
 // ======================================================================
 let pickerDirty = false;
-
-categoryColorPicker.addEventListener("input", () => {
+if (newReplyColorInput) {
+  newReplyColorInput.addEventListener("input", () => {
+    pickerDirty = true;
+    newReplyColorInput.blur();  // fecha o color picker
+  });
+}
+/* categoryColorPicker.addEventListener("input", () => {
     pickerDirty = true; // usuário alterou manualmente a cor
+    categoryColorPicker.blur(); // fecha o hidden picker (para casos que use ele)
+}); */
+
+// Fecha somente após o clique final no picker ao criar nova categoria
+categoryColorPicker.addEventListener("change", () => {
+  setTimeout(() => {
+    try { categoryColorPicker.blur(); } catch(e){}
+  }, 50);
 });
+
+// ======================================================================
+// Forçar o seletor a fechar somente após o clique final
+// ======================================================================
+if (newReplyColorInput) {
+  newReplyColorInput.addEventListener("change", () => {
+    setTimeout(() => {
+      try { newReplyColorInput.blur(); } catch(e){}
+    }, 50);
+  });
+}
 
 // ======================================================================
 // -------------------------- Funções Utilitárias ------------------------
@@ -49,25 +75,58 @@ function makeCategoryColorEditable(header, category, colors) {
   overlay.addEventListener("click", (e) => {
     e.stopPropagation();
 
+    // cria input color e anexa ao body para garantir comportamento do browser
     const inputColor = document.createElement("input");
     inputColor.type = "color";
+    inputColor.style.position = "fixed";
+    inputColor.style.left = "-9999px";
+    inputColor.style.top = "0";
     const computed = colors[category] || "#0078d7";
     inputColor.value = computed;
 
-    inputColor.addEventListener("input", () => {
-      const novaCor = inputColor.value;
-      header.style.setProperty("--tag-color", novaCor);
+    // handler único que aplica a cor e salva
+    const applyAndClose = () => {
+      try {
+        const novaCor = inputColor.value;
+        header.style.setProperty("--tag-color", novaCor);
 
-      chrome.storage.sync.get(["quickRepliesColors"], (res) => {
-        const cores = res.quickRepliesColors || {};
-        cores[category] = novaCor;
-        chrome.storage.sync.set({ quickRepliesColors: cores });
-      });
-    });
+        chrome.storage.sync.get(["quickRepliesColors"], (res) => {
+          const cores = res.quickRepliesColors || {};
+          cores[category] = novaCor;
+          chrome.storage.sync.set({ quickRepliesColors: cores });
+        });
+      } catch (err) {
+        // swallow
+      } finally {
+        // fecha e remove o input do DOM
+        setTimeout(() => {
+          try { inputColor.blur(); } catch(e){}
+          try { inputColor.remove(); } catch(e){}
+        }, 40);
+      }
+    };
 
+    inputColor.addEventListener("input", applyAndClose);
+    inputColor.addEventListener("change", applyAndClose);
+
+    // anexa ao DOM antes de abrir - evita comportamento inconsistente
+    document.body.appendChild(inputColor);
+    // abre o seletor
     inputColor.click();
+
+    // opção de fallback: se o usuário clicar fora, removemos em 3s só por segurança
+    const cleanupTimeout = setTimeout(() => {
+      try { inputColor.remove(); } catch(e){}
+    }, 3000);
+
+    // se removed explicitly, limpa timeout
+    inputColor.addEventListener("blur", () => {
+      clearTimeout(cleanupTimeout);
+      try { inputColor.remove(); } catch(e){}
+    }, { once: true });
   });
 }
+
 
 // ======================================================================
 // -------------------------- Storage Helpers ---------------------------
@@ -134,7 +193,9 @@ async function renderReplies(replies) {
 
     const header = document.createElement("div");
     header.className = "category-header";
-    header.textContent = cat;
+    // Contador de respostas nesta categoria
+    const count = groups[cat].length;
+    header.textContent = `${cat} (${count})`;
 
     const color = colors[cat] || "#0078d7";
     header.style.setProperty("--tag-color", color);
@@ -233,7 +294,11 @@ addReplyButton.addEventListener("click", async () => {
 
   const category = newReplyCategoryInput?.value.trim() || "Sem categoria";
   const text = newReplyInput.value.trim();
-  const userColor = categoryColorPicker?.value || null;
+  const userColor = (newReplyColorInput && newReplyColorInput.value) 
+  ? newReplyColorInput.value 
+  : (categoryColorPicker && categoryColorPicker.value) 
+    ? categoryColorPicker.value 
+    : null;
 
   if (!text) {
     replyForm.style.display = "none";
@@ -247,25 +312,47 @@ addReplyButton.addEventListener("click", async () => {
   const existingColor = colors[category];
   const defaultColor = "#0078d7";
 
-  // ============================================================
-  // 🔵 COR FINAL — (LÓGICA CORRIGIDA)
-  // ============================================================
-  let finalColor;
+// ===================================================================
+// 🔵 COR FINAL — LÓGICA REFORMULADA E CONFIÁVEL
+// ===================================================================
+let finalColor;
 
-  if (existingColor) {
+// 🟦 Quando existe cor salva para a categoria:
+if (existingColor) {
+    // Se o usuário NÃO mudou o picker → mantém a cor antiga
     if (!pickerDirty) {
-      finalColor = existingColor; // manter cor original
-    } else {
-      finalColor = userColor;
-      colors[category] = finalColor;
-      saveColors(colors);
+        finalColor = existingColor;
     }
-  } else {
-    finalColor = userColor || defaultColor;
-    colors[category] = finalColor;
-    saveColors(colors);
-  }
-  // ============================================================
+    // Se o usuário mudou a cor → usa a nova
+    else if (userColor && userColor.trim() !== "") {
+        finalColor = userColor;
+    }
+    // fallback caso o picker devolva algo inválido
+    else {
+        finalColor = existingColor;
+    }
+}
+
+// 🟩 Categoria **nova**
+else {
+    // Usuário escolheu cor → usa a escolhida
+    if (pickerDirty && userColor && userColor.trim() !== "") {
+        finalColor = userColor;
+    }
+    // Ninguém mexeu → default azul
+    else {
+        finalColor = defaultColor;
+    }
+}
+
+// Garantir que nunca salve cor inválida
+if (!finalColor || finalColor.trim() === "") {
+    finalColor = defaultColor;
+}
+
+// Salvar a cor final no storage
+colors[category] = finalColor;
+saveColors(colors);
 
   chrome.storage.sync.get(["quickReplies"], (r) => {
     const updated = (r.quickReplies || []).concat({ category, text });

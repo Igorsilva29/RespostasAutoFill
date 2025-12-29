@@ -141,7 +141,6 @@ function getCategoryColors() {
     }
   });
 }
-// ===========================================================================================
 
 // ---------------------- Criação do popup (mantendo comportamento original, mas com tag visual)
 function createPopup(doc, active, replies) {
@@ -511,7 +510,7 @@ async function insertTextOnce(element, text) {
 }
 
 // busca heurística por iframe de editor (id 'mensagem___Frame', src com 'fckeditor' ou nomes conhecidos)
-function findFckIframe(doc) {
+ function findFckIframe(doc) {
   // 1) id específico
   const byId = doc.querySelector('#mensagem___Frame');
   if (byId) return byId;
@@ -529,9 +528,10 @@ function findFckIframe(doc) {
     } catch (e) {}
   }
   return null;
-}
+} 
 
 // fallback que tenta procurar iframes acessíveis e inserir
+
 async function tryInsertWithRetriesFallback(text) {
   const frames = Array.from(document.querySelectorAll('iframe'));
   for (let f of frames) {
